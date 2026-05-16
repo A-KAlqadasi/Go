@@ -1,0 +1,3 @@
+Profit Before Tax: 5000
+Tax Amount: 75
+Profit After Tax: 4925
