@@ -1,71 +1,45 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"os"
-	"strconv"
+
+	"go-bank.com/fileops"
+
+	"github.com/Pallinder/go-randomdata"
 )
 
 const fileName = "balance.txt"
 
-func writeBalanceToFile(balance float64) {
-	var byteBalance = fmt.Sprint(balance)
-	err := os.WriteFile(fileName, []byte(byteBalance), 0644)
-	if err != nil {
-		fmt.Println("Error writing balance to file", err)
-	}
-
-}
-
-func readBalanceFromFile() (float64, error) {
-	var balance float64
-	data, err := os.ReadFile(fileName)
-	
-	if err != nil {
-		err = errors.New("Failed to read balance from file")
-		return 0, err
-	}
-
-	balanceText := string(data)
-	balance, _= strconv.ParseFloat(balanceText, 64)
-	return  balance, nil
-}
-
 func main() {
 	fmt.Println("============================")
 	fmt.Println("Welcome to Go Bank!")
+	fmt.Println("You can reach us 24/7 ", randomdata.PhoneNumber())
 	fmt.Println("============================")
 	
 
-	showMainMenu()
+	bankStartScreen()
 
 	fmt.Println("============================")
 	fmt.Println("Thank you for using Go Bank! Goodbye!")
 	fmt.Println("============================")
 }
 
-func showMainMenu() {
+
+
+func bankStartScreen() {
 
 	var option int
 	for option != 4 {
 		
-		balance, err := readBalanceFromFile()
+		balance, err := fileops.ReadValueFromFile(fileName)
 		if err != nil {
 			fmt.Println("Error: ", err)
 			panic("Can't continue, sorry")
 		}
 
-		fmt.Println("\nWhat would you like to do?")
-		fmt.Println("============================")
-		fmt.Println("1. Check balance")
-		fmt.Println("2. Deposit amount")
-		fmt.Println("3. Withdraw amount")
-		fmt.Println("4. Exit")
-		fmt.Println("============================")
+		showOptions()
 		fmt.Printf("Enter your choise: ")
 		fmt.Scan(&option);
-		
 		
 
 		switch option {
@@ -81,7 +55,7 @@ func showMainMenu() {
 					continue
 				}
 				fmt.Printf("\nYour new balance is: $%.2f\n", newBalance)
-				writeBalanceToFile(newBalance)
+				fileops.WriteValueToFile(newBalance, fileName)
 			}
 		case 3:
 			var withdrawAmount float64
@@ -91,7 +65,7 @@ func showMainMenu() {
 				continue
 			}
 			fmt.Printf("\nYour new balance is: $%.2f\n", balance)
-			writeBalanceToFile(balance)
+			fileops.WriteValueToFile(balance, fileName)
 		case 4:
 			fmt.Println("\nExiting the application...")
 		default:
